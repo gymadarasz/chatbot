@@ -15,6 +15,8 @@ use GyMadarasz\WebApp\Controller\PasswordResetPagePost;
 use GyMadarasz\WebApp\Controller\NewPasswordPagePost;
 use GyMadarasz\WebApp\Controller\LogoutPage;
 use GyMadarasz\ChatBot\Controller\MyChatsPage;
+use GyMadarasz\ChatBot\Controller\CreateChatPage;
+use GyMadarasz\ChatBot\Controller\EditChatPage;
 
 include __DIR__ . '/vendor/autoload.php';
 
@@ -57,10 +59,16 @@ new Router([
     'protected' => [
         'GET' => [
             '' => [MyChatsPage::class, 'view'],
+            'mychats' => [MyChatsPage::class, 'view'],
             'logout' => [LogoutPage::class, 'run'],
+            'editchat' => [EditChatPage::class, 'view'],
+            'createchat' => [CreateChatPage::class, 'view'],
+            'deletechat' => [MyChatsPage::class, 'delete'],
             '*' => [ErrorPage::class, 'run'],
         ],
         'POST' => [
+            'editchat' => [EditChatPage::class, 'edit'],
+            'createchat' => [CreateChatPage::class, 'save'],
             '*' => [ErrorPage::class, 'run'],
         ],
         '*' => [

@@ -45,7 +45,7 @@ Set the proper values in files:
     
 
 DB:
-see in `webapp.sql`
+see in `chatbot_test.sql`, impoert db and/or rename it as it set up in config (see above)
 
 tail monitoring: (path maybe different on your local environment)
 ```
