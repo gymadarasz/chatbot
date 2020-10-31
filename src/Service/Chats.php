@@ -13,10 +13,10 @@ class Chats
         $this->mysql = $mysql;
     }
 
-    public function create(string $name): bool
+    public function create(string $name): int
     {
         $_name = $this->mysql->escape($name);
-        return (bool)$this->mysql->insert("INSERT INTO chat (name) VALUES ('$_name');");
+        return $this->mysql->insert("INSERT INTO chat (name) VALUES ('$_name');");
     }
 
     public function modify(int $id, string $name): bool

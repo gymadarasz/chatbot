@@ -12,8 +12,8 @@ class ChatBotTest extends AppTest
         $this->logger->test('I am going to delete all chats from database.');
 
         // TODO ...
-        $this->mysql->connect();
-        $this->mysql->query("TRUNCATE chat");
+        // $this->mysql->connect();
+        // $this->mysql->query("TRUNCATE chat");
     }
 
     protected function cleanup(): void
@@ -95,7 +95,6 @@ class ChatBotTest extends AppTest
         
 
         $this->logger->test('I am going to post a new chat name.');
-
         $contents = $tester->post('?q=editchat', [
             'id' => $form['id'],
             'name' => 'Test Chat Renamed',
