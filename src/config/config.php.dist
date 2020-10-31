@@ -1,0 +1,4 @@
+<?php
+
+$baseUrl = 'http://localhost/chatbot/';
+$templatesPathExt = __DIR__ . '/../../../chatbot/src/templates';
