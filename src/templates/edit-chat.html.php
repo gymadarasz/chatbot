@@ -5,6 +5,7 @@
     <input type="text" name="name" value="<?php echo $name ?? '' ?>" placeholder="Chat name">
     <input type="submit" value="Save">
 </form>
+[TODO chat editor here]
 <a href="?q=logout">Logout</a>
 <a href="?q=mychats">My Chats</a>
 <a href="?q=createchat">Create new chat</a>

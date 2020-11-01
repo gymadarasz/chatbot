@@ -30,7 +30,6 @@ class ChatBotTest extends AppTest
         $this->registryTesterUser($tester);
 
         $this->logger->test('I am going to check if I can login.');
-
         $contents = $this->checkIfICanLogin($tester);
         $this->checkIfICanSeeMyChatsPage($tester, $contents);
 
@@ -116,6 +115,16 @@ class ChatBotTest extends AppTest
         $this->logger->test('I am going to check if I see my chat in My Chats list.');
 
         $contents = $tester->get('?q=mychats');
+        $this->checkIfICanSeeMyChatsPage($tester, $contents, [
+            ['id' => (string)$id, 'name' => 'Test Chat Renamed'],
+        ]);
+
+        $this->logger->test('I am going to logout and then log in to see I still can see my chats');
+        $contents = $tester->get('?q=logout');
+        $this->checkLoginPage($tester, $contents);
+        $this->checkPageContainsMessage($tester, $contents, 'Logout success');
+        $this->logger->test('I am going login.');
+        $contents = $this->checkIfICanLogin($tester);
         $this->checkIfICanSeeMyChatsPage($tester, $contents, [
             ['id' => (string)$id, 'name' => 'Test Chat Renamed'],
         ]);
