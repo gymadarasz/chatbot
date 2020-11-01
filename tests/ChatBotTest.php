@@ -26,10 +26,10 @@ class ChatBotTest extends AppTest
     {
         $this->cleanup();
 
-        $this->logger->test('I am goint to register a tester user.');
+        $this->logger->test('I am going to register a tester user.');
         $this->registryTesterUser($tester);
 
-        $this->logger->test('I am goint to check if I can login.');
+        $this->logger->test('I am going to check if I can login.');
 
         $contents = $this->checkIfICanLogin($tester);
         $this->checkIfICanSeeMyChatsPage($tester, $contents);
@@ -142,7 +142,7 @@ class ChatBotTest extends AppTest
     /** @param array<array<string>> $chats */
     protected function checkIfICanSeeMyChatsPage(Tester $tester, string $contents, array $chats = []): void
     {
-        $this->logger->test('I am check that I can see the My Chats page properly.');
+        $this->logger->test('I am going to check that I can see the My Chats page properly.');
 
         $tester->assertContains('<h1>My Chats</h1>', $contents);
 
@@ -158,7 +158,7 @@ class ChatBotTest extends AppTest
 
     protected function checkIfICanSeeCreateChatPage(Tester $tester, string $contents): void
     {
-        $this->logger->test('I am check that I can see the Create Chat page properly.');
+        $this->logger->test('I am going to check that I can see the Create Chat page properly.');
 
         $tester->assertContains('<h1>Create Chat</h1>', $contents);
         $tester->assertContains('<form method="POST" action="?q=createchat"', $contents);
@@ -174,7 +174,7 @@ class ChatBotTest extends AppTest
      */
     protected function checkIfICanSeeEditChatPage(Tester $tester, string $contents): array
     {
-        $this->logger->test('I am check that I can see the Edit Chat page properly.');
+        $this->logger->test('I am going to check that I can see the Edit Chat page properly.');
 
         $tester->assertContains('<h1>Edit Chat</h1>', $contents);
         $tester->assertContains('<form method="POST" action="?q=editchat"', $contents);

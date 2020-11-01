@@ -25,7 +25,7 @@ class LoginPagePost
     /**
      * @return mixed
      */
-    public function run()
+    public function login()
     {
         $this->mysql->connect();
         if ($this->user->doAuth(
