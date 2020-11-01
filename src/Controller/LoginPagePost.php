@@ -3,7 +3,6 @@
 namespace GyMadarasz\ChatBot\Controller;
 
 use GyMadarasz\WebApp\Service\Template;
-use GyMadarasz\WebApp\Service\Mysql;
 use GyMadarasz\WebApp\Service\User;
 use GyMadarasz\WebApp\Service\Globals;
 use GyMadarasz\ChatBot\Service\Chats;
@@ -11,15 +10,13 @@ use GyMadarasz\ChatBot\Service\Chats;
 class LoginPagePost
 {
     private Template $template;
-    private Mysql $mysql;
     private User $user;
     private Globals $globals;
     private Chats $chats;
 
-    public function __construct(Template $template, Mysql $mysql, User $user, Globals $globals, Chats $chats)
+    public function __construct(Template $template, User $user, Globals $globals, Chats $chats)
     {
         $this->template = $template;
-        $this->mysql = $mysql;
         $this->user = $user;
         $this->globals = $globals;
         $this->chats = $chats;
@@ -30,7 +27,6 @@ class LoginPagePost
      */
     public function login()
     {
-        $this->mysql->connect();
         if ($this->user->doAuth(
             $this->globals->getPost('email', ''),
             $this->globals->getPost('password', '')

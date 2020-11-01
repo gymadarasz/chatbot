@@ -11,9 +11,7 @@ class ChatBotTest extends AppTest
     {
         $this->logger->test('I am going to delete all chats from database.');
 
-        // TODO ...
-        // $this->mysql->connect();
-        // $this->mysql->query("TRUNCATE chat");
+        $this->mysql->query("TRUNCATE chat");
     }
 
     protected function cleanup(): void

@@ -6,20 +6,21 @@ use GyMadarasz\WebApp\Service\Template;
 use GyMadarasz\WebApp\Service\Globals;
 use GyMadarasz\ChatBot\Service\Chats;
 use GyMadarasz\WebApp\Service\Mysql;
+use GyMadarasz\WebApp\Service\FormToken;
 
 class CreateChatPage
 {
     protected Template $template;
     protected Globals $globals;
     protected Chats $chats;
-    protected Mysql $mysql;
+    protected FormToken $formToken;
 
-    public function __construct(Template $template, Globals $globals, Chats $chats, Mysql $mysql)
+    public function __construct(Template $template, Globals $globals, Chats $chats, FormToken $formToken)
     {
         $this->template = $template;
         $this->globals = $globals;
         $this->chats = $chats;
-        $this->mysql = $mysql;
+        $this->formToken = $formToken;
     }
 
     public function view(): Template
@@ -35,7 +36,6 @@ class CreateChatPage
                 'error' => 'Please set Chat Name',
             ]);
         }
-        $this->mysql->connect();
         $id = $this->chats->create($name);
         if (!$id) {
             return $this->template->create('create-chat.html.php', [
@@ -44,9 +44,11 @@ class CreateChatPage
             ]);
         }
         return $this->template->create('edit-chat.html.php', [
+            'token' => $this->formToken->get(),
             'id' => $id,
             'name' => $name,
             'message' => 'Chat created',
+            'messages' => $this->chats->loadTree($id),
         ]);
     }
 }

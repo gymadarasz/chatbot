@@ -32,8 +32,6 @@ new Router(
                     'login' => [LoginPagePost::class, 'login'],
                 ],
             ],
-        ])
-        ->apply([
             'protected' => [
                 'GET' => [
                     '' => [MyChatsPage::class, 'view'],
@@ -45,6 +43,8 @@ new Router(
                 'POST' => [
                     'editchat' => [EditChatPage::class, 'edit'],
                     'createchat' => [CreateChatPage::class, 'save'],
+                    'createmsg' => [EditChatPage::class, 'createMessage'],
+                    'modifymsg2msg' => [EditChatPage::class, 'modifyMessageToMessage'],
                 ],
             ],
         ])

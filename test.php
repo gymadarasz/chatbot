@@ -8,6 +8,7 @@ use GyMadarasz\Test\Tester;
 use GyMadarasz\Test\AppTest;
 use GuzzleHttp\Client;
 use GyMadarasz\ChatBot\Test\ChatBotTest;
+use GyMadarasz\ChatBot\Test\ConversationCrudTest;
 
 include __DIR__ . '/vendor/autoload.php';
 
@@ -36,5 +37,6 @@ return (new Tester(
     ]), [
         // new AppTest($config, $logger, $mysql),
         new ChatBotTest($config, $logger, $mysql),
+        new ConversationCrudTest($config, $logger, $mysql),
     ]
 ))->stat();
