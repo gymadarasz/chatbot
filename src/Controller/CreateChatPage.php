@@ -5,50 +5,36 @@ namespace GyMadarasz\ChatBot\Controller;
 use GyMadarasz\WebApp\Service\Template;
 use GyMadarasz\WebApp\Service\Globals;
 use GyMadarasz\ChatBot\Service\Chats;
-use GyMadarasz\WebApp\Service\Mysql;
 use GyMadarasz\WebApp\Service\FormToken;
 
 class CreateChatPage
 {
-    protected Template $template;
-    protected Globals $globals;
-    protected Chats $chats;
-    protected FormToken $formToken;
-
-    public function __construct(Template $template, Globals $globals, Chats $chats, FormToken $formToken)
+    public function view(Template $template): Template
     {
-        $this->template = $template;
-        $this->globals = $globals;
-        $this->chats = $chats;
-        $this->formToken = $formToken;
+        return $template->create('create-chat.html.php');
     }
 
-    public function view(): Template
+    public function save(Template $template, Globals $globals, Chats $chats, FormToken $formToken): Template
     {
-        return $this->template->create('create-chat.html.php');
-    }
-
-    public function save(): Template
-    {
-        $name = $this->globals->getPost('name');
+        $name = $globals->getPost('name');
         if (!$name) {
-            return $this->template->create('create-chat.html.php', [
+            return $template->create('create-chat.html.php', [
                 'error' => 'Please set Chat Name',
             ]);
         }
-        $id = $this->chats->create($name);
+        $id = $chats->create($name);
         if (!$id) {
-            return $this->template->create('create-chat.html.php', [
+            return $template->create('create-chat.html.php', [
                 'name' => $name,
                 'error' => 'Chat is not created',
             ]);
         }
-        return $this->template->create('edit-chat.html.php', [
-            'token' => $this->formToken->get(),
+        return $template->create('edit-chat.html.php', [
+            'token' => $formToken->get(),
             'id' => $id,
             'name' => $name,
             'message' => 'Chat created',
-            'messages' => $this->chats->loadTree($id),
+            'messages' => $chats->loadTree($id),
         ]);
     }
 }

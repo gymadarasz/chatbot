@@ -9,34 +9,18 @@ use GyMadarasz\ChatBot\Service\Chats;
 
 class LoginPagePost
 {
-    private Template $template;
-    private User $user;
-    private Globals $globals;
-    private Chats $chats;
-
-    public function __construct(Template $template, User $user, Globals $globals, Chats $chats)
+    public function login(Template $template, User $user, Globals $globals, Chats $chats): Template
     {
-        $this->template = $template;
-        $this->user = $user;
-        $this->globals = $globals;
-        $this->chats = $chats;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function login()
-    {
-        if ($this->user->doAuth(
-            $this->globals->getPost('email', ''),
-            $this->globals->getPost('password', '')
+        if ($user->doAuth(
+            $globals->getPost('email', ''),
+            $globals->getPost('password', '')
         )) {
-            $output = $this->template->create('my-chats.html.php', [
-                'chats' => $this->chats->getList(),
+            $output = $template->create('my-chats.html.php', [
+                'chats' => $chats->getList(),
             ]);
             $output->set('message', 'Login success');
         } else {
-            $output = $this->template->create('login.html.php');
+            $output = $template->create('login.html.php');
             $output->set('error', 'Login failed');
         }
 
