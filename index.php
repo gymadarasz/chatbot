@@ -39,6 +39,7 @@ new Router(
                     'editchat' => [EditChatPage::class, 'view'],
                     'createchat' => [CreateChatPage::class, 'view'],
                     'deletechat' => [MyChatsPage::class, 'delete'],
+                    'delmsg' => [EditChatPage::class, 'deleteMessage'],
                 ],
                 'POST' => [
                     'editchat' => [EditChatPage::class, 'edit'],

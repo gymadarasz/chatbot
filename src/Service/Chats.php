@@ -43,7 +43,7 @@ class Chats
     }
 
     /**
-     * @return array<mixed>
+     * @return array<array<string|array<array<string>>>>
      */
     public function loadTree(int $chatId): array
     {
@@ -52,19 +52,20 @@ class Chats
             WHERE chat_id = $chatId AND talks = 'chatbot' AND deleted = 0;
         ");
         foreach ($messages as &$message) {
-            $message['human_response_messages'] = $this->mysql->select("
+            $h = $this->mysql->select("
                 SELECT response_message_id as id, talks, content FROM message_to_message
                 JOIN message ON message.id = response_message_id
                 WHERE request_message_id = {$message['id']} AND message.deleted = 0;
             ");
-            foreach ($message['human_response_messages'] as &$hmessage) {
+            foreach ($h as &$hmessage) {
                 $messageToMessage = $this->mysql->selectOne("
                     SELECT response_message_id FROM message_to_message 
                     WHERE request_message_id = {$hmessage['id']}
                     LIMIT 1;
                 ");
-                $hmessage['response_message_id'] = $messageToMessage['response_message_id'] ?? 0;
+                $hmessage['response_message_id'] = $messageToMessage['response_message_id'] ?? '';
             }
+            $message['human_response_messages'] = $h;
         }
         return $messages;
     }
@@ -110,5 +111,16 @@ class Chats
     public function setMessageToMessageResponseMessageIdByRequestMessageId(int $requestMessageId, int $responseMessageId): int
     {
         return $this->mysql->update("UPDATE message_to_message SET response_message_id = $responseMessageId WHERE request_message_id = $requestMessageId LIMIT 1;");
+    }
+
+    public function getChatIdFromMessageId(int $messageId): int
+    {
+        $message = $this->mysql->selectOne("SELECT chat_id FROM message WHERE id = $messageId AND deleted = 0 LIMIT 1;");
+        return (int)($message['chat_id'] ?? 0);
+    }
+
+    public function deleteMessage(int $messageId): int
+    {
+        return $this->mysql->update("UPDATE message SET deleted = 1 WHERE id = $messageId AND deleted = 0 LIMIT 1;");
     }
 }

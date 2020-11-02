@@ -122,6 +122,15 @@ class EditChatPage
         );
     }
 
+    public function deleteMessage(): Template
+    {
+        $error = null;
+        $messageId = (int)$this->globals->getGet('id');
+        $chatId = $this->chats->getChatIdFromMessageId($messageId);
+        $this->chats->deleteMessage($messageId);
+        return $this->viewChat($chatId);
+    }
+
     private function viewChat(int $id, string $error = null): Template
     {
         if (!$chat = $this->chats->retrieve($id)) {

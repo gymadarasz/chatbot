@@ -183,7 +183,27 @@ class ConversationCrudTest extends AppTest
         $tester->assertEquals(2, count($responseMessageIds), 'Should have 2 form which is modifies the response_message_id in a message_to_message relation.');
         $tester->assertEquals($responseMessageIdSelectsValues[0][2], $responseMessageIds[0]);
         $tester->assertEquals($responseMessageIdSelectsValues[1][3], $responseMessageIds[1]);
+
+        $deleteMessageLinks = $this->getLinks('?q=delmsg&id=', $contents);
+        $tester->assertEquals(5, count($deleteMessageLinks));
+        while ($deleteMessageLinks) {
+            $contents = $tester->get($deleteMessageLinks[0]);
+            $deleteMessageLinks = $this->getLinks('?q=delmsg&id=', $contents);
+        }
+
+        $deleteMessageLinks = $this->getLinks('?q=delmsg&id=', $contents);
+        $tester->assertEquals(0, count($deleteMessageLinks));
     }
+
+    /** @return array<string> */
+    private function getLinks(string $hrefStarts, string $contents): array
+    {
+        if (!preg_match_all('/<a href="(' . preg_quote($hrefStarts) . '[^"]*)"/', $contents, $matches)) {
+            return [];
+        }
+        return $matches[1];
+    }
+
 
     /**
      * @return array<array<string>>
