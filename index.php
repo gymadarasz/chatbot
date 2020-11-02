@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
 use GyMadarasz\WebApp\Router;
+use GyMadarasz\WebApp\Service\Invoker;
 use GyMadarasz\WebApp\Service\RouteSet;
 use GyMadarasz\WebApp\Service\Config;
 use GyMadarasz\ChatBot\Controller\LoginPagePost;
@@ -49,5 +50,6 @@ new Router(
                 ],
             ],
         ])
-        ->getRoutes()
+        ->getRoutes(),
+        new Invoker()
 );

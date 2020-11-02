@@ -1,5 +1,6 @@
 <?php declare(strict_types = 1);
 
+use GyMadarasz\WebApp\Service\Invoker;
 use GyMadarasz\WebApp\Service\Logger;
 use GyMadarasz\WebApp\Service\Config;
 use GyMadarasz\WebApp\Service\Mysql;
@@ -9,6 +10,7 @@ use GyMadarasz\Test\AppTest;
 use GuzzleHttp\Client;
 use GyMadarasz\ChatBot\Test\ChatBotTest;
 use GyMadarasz\ChatBot\Test\ConversationCrudTest;
+use GyMadarasz\ChatBot\Test\ConversationTest;
 
 include __DIR__ . '/vendor/autoload.php';
 
@@ -27,8 +29,9 @@ error_reporting(E_ALL | E_STRICT);
 
 ($config = new Config())->setExtPath(__DIR__ . '/src/config');
 
-$mysql = new Mysql($config);
-return (new Tester(
+// $mysql = new Mysql($config);
+return (new Tester())->test(
+    new Invoker(),
     $config,
     $logger = new Logger($config),
     new Client([
@@ -36,7 +39,8 @@ return (new Tester(
         'cookies' => true,
     ]), [
         // new AppTest($config, $logger, $mysql),
-        new ChatBotTest($config, $logger, $mysql),
-        new ConversationCrudTest($config, $logger, $mysql),
+        ChatBotTest::class, //new ChatBotTest($config, $logger, $mysql),
+        ConversationCrudTest::class, //new ConversationCrudTest($config, $logger, $mysql),
+        ConversationTest::class, //new ConversationTest($config, $logger, $mysql),
     ]
-))->stat();
+)->stat();
