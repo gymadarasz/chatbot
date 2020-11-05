@@ -31,6 +31,7 @@ new Router(
                 'POST' => [
                     '' => [LoginPagePost::class, 'login'],
                     'login' => [LoginPagePost::class, 'login'],
+                    'chat' => [ChatPage::class, 'chat'],
                 ],
             ],
             'protected' => [

@@ -40,7 +40,7 @@ return (new Tester())->test(
     ]), [
         // new AppTest($config, $logger, $mysql),
         ChatBotTest::class, //new ChatBotTest($config, $logger, $mysql),
-        ConversationCrudTest::class, //new ConversationCrudTest($config, $logger, $mysql),
+        // ConversationCrudTest::class, //new ConversationCrudTest($config, $logger, $mysql),
         ConversationTest::class, //new ConversationTest($config, $logger, $mysql),
     ]
 )->stat();

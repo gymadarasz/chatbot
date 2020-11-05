@@ -4,8 +4,9 @@
 <ul>
     <?php foreach ($chats ?? [] as $chat) { ?>
     <li>
-        <a href="?q=editchat&id=<?php echo $chat['id'] ?>"><?php echo $chat['name'] ?></a>
-        <a href="?q=deletechat&id=<?php echo $chat['id']?>">Delete</a>
+        <a href="?q=editchat&id=<?php echo $chat['id'] ?? '' ?>"><?php echo $chat['name'] ?></a>
+        <a href="?q=chat&id=<?php echo $chat['id'] ?? '' ?>">Go Chat</a>
+        <a href="?q=deletechat&id=<?php echo $chat['id'] ?? '' ?>">Delete</a>
     </li>
     <?php } ?>
 </ul>

@@ -13,6 +13,7 @@ class ConversationCrudTest extends AppTest
 
         $this->logger->test('I am going to delete all messages from database.');
 
+        $this->mysql->query("TRUNCATE chat");
         $this->mysql->query("TRUNCATE message");
         $this->mysql->query("TRUNCATE message_to_message");
 
