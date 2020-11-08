@@ -1,126 +1,270 @@
 <?php declare(strict_types = 1);
 
+/**
+ * PHP version 7.4
+ *
+ * @category  PHP
+ * @package   GyMadarasz\ChatBot\Service
+ * @author    Gyula Madarasz <gyula.madarasz@gmail.com>
+ * @copyright 2020 Gyula Madarasz
+ * @license   Copyright (c) all right reserved.
+ * @link      this
+ */
+
 namespace GyMadarasz\ChatBot\Service;
 
 use GyMadarasz\WebApp\Service\Mysql;
 
+/**
+ * Chats
+ *
+ * @category  PHP
+ * @package   GyMadarasz\ChatBot\Service
+ * @author    Gyula Madarasz <gyula.madarasz@gmail.com>
+ * @copyright 2020 Gyula Madarasz
+ * @license   Copyright (c) all right reserved.
+ * @link      this
+ */
 class Chats
 {
-    private Mysql $mysql;
+    protected Mysql $mysql;
 
+    /**
+     * Method __construct
+     *
+     * @param Mysql $mysql mysql
+     */
     public function __construct(Mysql $mysql)
     {
         $this->mysql = $mysql;
     }
 
+    /**
+     * Method create
+     *
+     * @param string $name name
+     *
+     * @return int
+     */
     public function create(string $name): int
     {
-        $_name = $this->mysql->escape($name);
-        return $this->mysql->insert("INSERT INTO chat (name) VALUES ('$_name');");
+        $nameEscaped = $this->mysql->escape($name);
+        return $this->mysql->insert(
+            "INSERT INTO chat (name) VALUES ('$nameEscaped');"
+        );
     }
 
-    public function modify(int $id, string $name): bool
+    /**
+     * Method modify
+     *
+     * @param int    $cid  id
+     * @param string $name name
+     *
+     * @return bool
+     */
+    public function modify(int $cid, string $name): bool
     {
-        $_name = $this->mysql->escape($name);
-        return (bool)$this->mysql->update("UPDATE chat SET name = '$_name' WHERE id = $id AND deleted = 0 LIMIT 1;");
+        $nameEscaped = $this->mysql->escape($name);
+        return (bool)$this->mysql->update(
+            "UPDATE chat SET name = '$nameEscaped' "
+                . "WHERE id = $cid AND deleted = 0 LIMIT 1;"
+        );
     }
 
-    /** @return array<string> */
-    public function retrieve(int $id): array
+    /**
+     * Method retrieve
+     *
+     * @param int $cid id
+     *
+     * @return string[]
+     */
+    public function retrieve(int $cid): array
     {
-        return (array)$this->mysql->selectOne("SELECT id, name FROM chat WHERE id = $id AND deleted = 0 LIMIT 1;");
+        return (array)$this->mysql->selectOne(
+            "SELECT id, name FROM chat "
+                . "WHERE id = $cid AND deleted = 0 LIMIT 1;"
+        );
     }
 
-    /** @return array<array<string>> */
+    /**
+     * Method getList
+     *
+     * @return string[][]
+     */
     public function getList(): array
     {
         return $this->mysql->select("SELECT id, name FROM chat WHERE deleted = 0;");
     }
 
-    public function delete(int $id): bool
+    /**
+     * Method delete
+     *
+     * @param int $cid id
+     *
+     * @return bool
+     */
+    public function delete(int $cid): bool
     {
-        return (bool)$this->mysql->update("UPDATE chat SET deleted = 1 WHERE id = $id AND deleted = 0 LIMIT 1;");
+        return (bool)$this->mysql->update(
+            "UPDATE chat SET deleted = 1 "
+                . "WHERE id = $cid AND deleted = 0 LIMIT 1;"
+        );
     }
 
     /**
-     * @return array<array<string|array<array<string>>>>
+     * Method loadTree
+     *
+     * @param int $chatId chatId
+     *
+     * @return array<array<string|string[][]>>
      */
     public function loadTree(int $chatId): array
     {
-        $messages = $this->mysql->select("
+        $messages = $this->mysql->select(
+            "
             SELECT id, talks, content FROM message 
             WHERE chat_id = $chatId AND talks = 'chatbot' AND deleted = 0;
-        ");
+        "
+        );
         foreach ($messages as &$message) {
-            $h = $this->mysql->select("
-                SELECT response_message_id as id, talks, content FROM message_to_message
+            $humanMessages = $this->mysql->select(
+                "
+                SELECT response_message_id as id, talks, content 
+                FROM message_to_message
                 JOIN message ON message.id = response_message_id
                 WHERE request_message_id = {$message['id']} AND message.deleted = 0;
-            ");
-            foreach ($h as &$hmessage) {
-                $messageToMessage = $this->mysql->selectOne("
+            "
+            );
+            foreach ($humanMessages as &$hmessage) {
+                $messageToMessage = $this->mysql->selectOne(
+                    "
                     SELECT response_message_id FROM message_to_message 
                     WHERE request_message_id = {$hmessage['id']}
                     LIMIT 1;
-                ");
-                $hmessage['response_message_id'] = $messageToMessage['response_message_id'] ?? '';
+                "
+                );
+                $hmessage['response_message_id'] = $messageToMessage[
+                    'response_message_id'] ?? '';
             }
-            $message['human_response_messages'] = $h;
+            $message['human_response_messages'] = $humanMessages;
         }
         return $messages;
     }
 
     /**
-     * @param array<string> $message
+     * Method createMessage
+     *
+     * @param string[] $message message
+     *
+     * @return int
      */
     public function createMessage(array $message): int
     {
-        $_chatId = (int)$message['chat_id'];
-        $_talks = $this->mysql->escape($message['talks']);
-        $_content = $this->mysql->escape($message['content']);
-        return $this->mysql->insert("INSERT INTO message (chat_id, talks, content) VALUES ($_chatId, '$_talks', '$_content');");
+        $chatIdEscaped = (int)$message['chat_id'];
+        $talksEscaped = $this->mysql->escape($message['talks']);
+        $contentEscaped = $this->mysql->escape($message['content']);
+        return $this->mysql->insert(
+            "INSERT INTO message (chat_id, talks, content) "
+                . "VALUES ($chatIdEscaped, '$talksEscaped', '$contentEscaped');"
+        );
     }
 
     /**
-     * @param array<string> $messageToMessage
+     * Method createMessageToMessage
+     *
+     * @param string[] $messageToMessage messageToMessage
+     *
+     * @return int
      */
     public function createMessageToMessage(array $messageToMessage): int
     {
-        $_requestMessageId = (int)$messageToMessage['request_message_id'];
-        $_responseMessageId = (int)$messageToMessage['response_message_id'];
-        return $this->mysql->insert("INSERT INTO message_to_message (request_message_id, response_message_id) VALUES ($_requestMessageId, $_responseMessageId);");
+        $reqMsgIdEscaped = (int)$messageToMessage['request_message_id'];
+        $respMsgIdEscaped = (int)$messageToMessage['response_message_id'];
+        return $this->mysql->insert(
+            "INSERT INTO message_to_message "
+                . "(request_message_id, response_message_id) "
+                . "VALUES ($reqMsgIdEscaped, $respMsgIdEscaped);"
+        );
     }
 
     /**
+     * Method getMessageTalks
+     *
+     * @param int $cid id
+     *
      * @return string
      */
-    public function getMessageTalks(int $id): string
+    public function getMessageTalks(int $cid): string
     {
-        $message = $this->mysql->selectOne("SELECT talks FROM message WHERE id = $id AND deleted = 0 LIMIT 1;");
+        $message = $this->mysql->selectOne(
+            "SELECT talks FROM message WHERE id = $cid AND deleted = 0 LIMIT 1;"
+        );
         return $message['talks'] ?? '';
     }
 
     /**
-     * @return array<array<string>>
+     * Method getMessageToMessageAllByRequestMessageId
+     *
+     * @param int $requestMessageId requestMessageId
+     *
+     * @return string[][]
      */
-    public function getMessageToMessageAllByRequestMessageId(int $requestMessageId): array
-    {
-        return $this->mysql->select("SELECT * FROM message_to_message WHERE request_message_id = $requestMessageId;");
+    public function getMessageToMessageAllByRequestMessageId(
+        int $requestMessageId
+    ): array {
+        return $this->mysql->select(
+            "SELECT * FROM message_to_message "
+                . "WHERE request_message_id = $requestMessageId;"
+        );
     }
 
-    public function setMessageToMessageResponseMessageIdByRequestMessageId(int $requestMessageId, int $responseMessageId): int
-    {
-        return $this->mysql->update("UPDATE message_to_message SET response_message_id = $responseMessageId WHERE request_message_id = $requestMessageId LIMIT 1;");
+    /**
+     * Method setMessageToMessageResponseMessageIdByRequestMessageId
+     *
+     * @param int $requestMessageId  requestMessageId
+     * @param int $responseMessageId responseMessageId
+     *
+     * @return int
+     */
+    public function setMessageToMessageResponseMessageIdByRequestMessageId(
+        int $requestMessageId,
+        int $responseMessageId
+    ): int {
+        return $this->mysql->update(
+            "UPDATE message_to_message "
+                . "SET response_message_id = $responseMessageId "
+                . "WHERE request_message_id = $requestMessageId LIMIT 1;"
+        );
     }
 
+    /**
+     * Method getChatIdFromMessageId
+     *
+     * @param int $messageId messageId
+     *
+     * @return int
+     */
     public function getChatIdFromMessageId(int $messageId): int
     {
-        $message = $this->mysql->selectOne("SELECT chat_id FROM message WHERE id = $messageId AND deleted = 0 LIMIT 1;");
+        $message = $this->mysql->selectOne(
+            "SELECT chat_id FROM message "
+                . "WHERE id = $messageId AND deleted = 0 LIMIT 1;"
+        );
         return (int)($message['chat_id'] ?? 0);
     }
 
+    /**
+     * Method deleteMessage
+     *
+     * @param int $messageId messageId
+     *
+     * @return int
+     */
     public function deleteMessage(int $messageId): int
     {
-        return $this->mysql->update("UPDATE message SET deleted = 1 WHERE id = $messageId AND deleted = 0 LIMIT 1;");
+        return $this->mysql->update(
+            "UPDATE message SET deleted = 1 "
+                . "WHERE id = $messageId AND deleted = 0 LIMIT 1;"
+        );
     }
 }

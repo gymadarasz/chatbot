@@ -8,18 +8,19 @@ use GyMadarasz\ChatBot\Controller\LoginPagePost;
 use GyMadarasz\ChatBot\Controller\MyChatsPage;
 use GyMadarasz\ChatBot\Controller\EditChatPage;
 use GyMadarasz\ChatBot\Controller\CreateChatPage;
+use GyMadarasz\ChatBot\Controller\ChatPage;
 
 include __DIR__ . '/vendor/autoload.php';
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL | E_STRICT);
-set_error_handler(
-    static function(int $errno, string $errstr, string $errfile = null, int $errline = null, array $errcontext = null) : bool
-    {
-        throw new RuntimeException("An error occured: (code: $errno): $errstr\nIn file $errfile:$errline\n");
-    }
-);
+//set_error_handler(
+//    static function(int $errno, string $errstr, string $errfile = null, int $errline = null, array $errcontext = null) : bool
+//    {
+//        throw new RuntimeException("An error occured: (code: $errno): $errstr\nIn file $errfile:$errline\n");
+//    }
+//);
 
 (new Config())->setExtPath(__DIR__ . '/src/config');
 
@@ -33,6 +34,9 @@ new Router(
                     'login' => [LoginPagePost::class, 'login'],
                     'chat' => [ChatPage::class, 'chat'],
                 ],
+                'GET' => [
+                    'chat' => [ChatPage::class, 'chat'],
+                ],
             ],
             'protected' => [
                 'GET' => [
@@ -42,12 +46,14 @@ new Router(
                     'createchat' => [CreateChatPage::class, 'view'],
                     'deletechat' => [MyChatsPage::class, 'delete'],
                     'delmsg' => [EditChatPage::class, 'deleteMessage'],
+                    'chat' => [ChatPage::class, 'chat'],
                 ],
                 'POST' => [
                     'editchat' => [EditChatPage::class, 'edit'],
                     'createchat' => [CreateChatPage::class, 'save'],
                     'createmsg' => [EditChatPage::class, 'createMessage'],
                     'modifymsg2msg' => [EditChatPage::class, 'modifyMessageToMessage'],
+                    'chat' => [ChatPage::class, 'chat'],
                 ],
             ],
         ])

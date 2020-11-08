@@ -1,5 +1,5 @@
 <h1>Edit Chat</h1>
-<?php echo isset($this) ? $this->create('messages.html.php', $this->data) : ''; ?>
+<?php echo isset($this) ? $this->create('messages.html', $this->data) : ''; ?>
 <form method="POST" action="?q=editchat">
     <input type="hidden" name="id" value="<?php echo $id ?? '' ?>">
     <input type="text" name="name" value="<?php echo $name ?? '' ?>" placeholder="Chat name">
@@ -28,7 +28,8 @@
                     <select name="message_to_message[response_message_id]" onchange="document.getElementById('modifymsg2msgform-<?php echo "$mkey-$hkey" ?>').submit();">
                         <option value="0">-- End conversation --</option>
                         <?php foreach ($messages ?? [] as $bmessage) { ?>
-                        <option value="<?php echo $bmessage['id'] ?>"<?php if ($bmessage['id'] === $hmessage['response_message_id']) { ?> <?php echo "selected" ?> <?php } ?>>#<?php echo $bmessage['id'] ?>: <?php echo $bmessage['content'] ?></option>
+                        <option value="<?php echo $bmessage['id'] ?>"<?php if ($bmessage['id'] === $hmessage['response_message_id']) { ?> <?php echo "selected" ?> <?php
+                                       } ?>>#<?php echo $bmessage['id'] ?>: <?php echo $bmessage['content'] ?></option>
                         <?php } ?>
                     </select>
                 </form>

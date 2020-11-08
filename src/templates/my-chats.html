@@ -1,5 +1,5 @@
 <h1>My Chats</h1>
-<?php echo isset($this) ? $this->create('messages.html.php', $this->data) : ''; ?>
+<?php echo isset($this) ? $this->create('messages.html', $this->data) : ''; ?>
 
 <ul>
     <?php foreach ($chats ?? [] as $chat) { ?>

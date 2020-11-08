@@ -55,5 +55,5 @@ tail -f /var/log/apache2/error.log -f /var/www/webapp/logs/*.log -f /var/log/apa
 tests:
 ```
 cd ../chatbot
-./test.sh
+sudo ../webapp/test.sh
 ```
