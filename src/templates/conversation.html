@@ -1,0 +1,30 @@
+<h1>{{ $chat['name'] }}</h1>
+{{ $this->create('messages.html', $this->data) }}
+
+<ul>
+    {{? foreach ($conversation as $message): }}
+    <li title="{{ $message['created_at'] }}">
+        <strong>{{ $message['talks'] }}:</strong>
+        <i>{{ $message['content']}}</i>
+    </li>
+    {{? endforeach; }}
+</ul>
+
+{{? if ($responses): }}
+<form method="POST" action="?q=conversation-response">
+    {{ $token }}
+    <input type="hidden" name="conversation_id" value="{{ $conversation_id }}">
+    <select name="human_response_message_id">
+        {{? foreach ($responses as $response): }}
+        <option value="{{ $response['id'] }}">{{ $response['content'] }}</option>
+        {{? endforeach }}
+    </select>
+    <input type="submit">
+</form>
+
+{{? else: }}
+<p>Converation is finished.</p>
+{{? endif; }}
+
+
+<a href="?q=mychats">My Chats</a>

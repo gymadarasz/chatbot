@@ -39,7 +39,7 @@ class CreateChatPage
      */
     public function view(Template $template): Template
     {
-        return $template->create('create-chat.html');
+        return $template->create('index.html', ['body' => 'create-chat.html']);
     }
 
     /**
@@ -61,30 +61,33 @@ class CreateChatPage
         $name = $globals->getPost('name');
         if (!$name) {
             return $template->create(
-                'create-chat.html',
+                'index.html',
                 [
-                'error' => 'Please set Chat Name',
+                    'body' => 'create-chat.html',
+                    'error' => 'Please set Chat Name',
                 ]
             );
         }
         $cid = $chats->create($name);
         if (!$cid) {
             return $template->create(
-                'create-chat.html',
+                'index.html',
                 [
-                'name' => $name,
-                'error' => 'Chat is not created',
+                    'body' => 'create-chat.html',
+                    'name' => $name,
+                    'error' => 'Chat is not created',
                 ]
             );
         }
         return $template->create(
-            'edit-chat.html',
+            'index.html',
             [
-            'token' => $formToken->get(),
-            'id' => $cid,
-            'name' => $name,
-            'message' => 'Chat created',
-            'messages' => $chats->loadTree($cid),
+                'body' => 'edit-chat.html',
+                'token' => $formToken->get(),
+                'id' => $cid,
+                'name' => $name,
+                'message' => 'Chat created',
+                'messages' => $chats->loadTree($cid),
             ]
         );
     }

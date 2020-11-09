@@ -190,14 +190,14 @@ class Chats
     /**
      * Method getMessageTalks
      *
-     * @param int $cid id
+     * @param int $mid id
      *
      * @return string
      */
-    public function getMessageTalks(int $cid): string
+    public function getMessageTalks(int $mid): string
     {
         $message = $this->mysql->selectOne(
-            "SELECT talks FROM message WHERE id = $cid AND deleted = 0 LIMIT 1;"
+            "SELECT talks FROM message WHERE id = $mid AND deleted = 0 LIMIT 1;"
         );
         return $message['talks'] ?? '';
     }
@@ -266,5 +266,23 @@ class Chats
             "UPDATE message SET deleted = 1 "
                 . "WHERE id = $messageId AND deleted = 0 LIMIT 1;"
         );
+    }
+
+    /**
+     * Method retrieveFromConversationId
+     *
+     * @param int $conversationId conversationId
+     *
+     * @return string[]
+     */
+    public function retrieveFromConversationId(int $conversationId): array
+    {
+        $query = "
+            SELECT * FROM chat
+            JOIN conversation ON conversation.chat_id = chat.id
+            WHERE conversation.id = $conversationId AND chat.deleted = 0
+            LIMIT 1
+        ";
+        return $this->mysql->selectOne($query);
     }
 }

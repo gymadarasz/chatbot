@@ -78,44 +78,48 @@ class EditChatPage
         $name = $this->globals->getPost('name');
         if (!$cid) {
             return $this->template->create(
-                'create-chat.html',
+                'index.html',
                 [
-                'name' => $name,
-                'error' => 'Chat is missing',
+                    'body' => 'create-chat.html',
+                    'name' => $name,
+                    'error' => 'Chat is missing',
                 ]
             );
         }
         if (!$name) {
             return $this->template->create(
-                'edit-chat.html',
+                'index.html',
                 [
-                'token' => $this->formToken->get(),
-                'id' => $cid,
-                'error' => 'Chat Name is missing',
-                'messages' => $this->chats->loadTree($cid),
+                    'body' => 'edit-chat.html',
+                    'token' => $this->formToken->get(),
+                    'id' => $cid,
+                    'error' => 'Chat Name is missing',
+                    'messages' => $this->chats->loadTree($cid),
                 ]
             );
         }
         if (!$this->chats->modify($cid, $name)) {
             return $this->template->create(
-                'edit-chat.html',
+                'index.html',
                 [
-                'token' => $this->formToken->get(),
-                'id' => $cid,
-                'name' => $name,
-                'error' => 'Chat is not modified',
-                'messages' => $this->chats->loadTree($cid),
+                    'body' => 'edit-chat.html',
+                    'token' => $this->formToken->get(),
+                    'id' => $cid,
+                    'name' => $name,
+                    'error' => 'Chat is not modified',
+                    'messages' => $this->chats->loadTree($cid),
                 ]
             );
         }
         return $this->template->create(
-            'edit-chat.html',
+            'index.html',
             [
-            'token' => $this->formToken->get(),
-            'id' => $cid,
-            'name' => $name,
-            'message' => 'Chat is modified',
-            'messages' => $this->chats->loadTree($cid),
+                'body' => 'edit-chat.html',
+                'token' => $this->formToken->get(),
+                'id' => $cid,
+                'name' => $name,
+                'message' => 'Chat is modified',
+                'messages' => $this->chats->loadTree($cid),
             ]
         );
     }
@@ -234,9 +238,11 @@ class EditChatPage
         $chat = $this->chats->retrieve($cid);
         if (!$chat) {
             return $this->template->create(
-                'my-chats.html',
+                'index.html',
                 [
-                'error' => 'Chat not found',
+                    'body' => 'my-chats.html',
+                    'error' => 'Chat not found',
+                    'token' => $this->formToken->get(),
                 ]
             );
         }
@@ -250,6 +256,7 @@ class EditChatPage
         if ($error) {
             $output['error'] = $error;
         }
-        return $this->template->create('edit-chat.html', $output);
+        $output['body'] = 'edit-chat.html';
+        return $this->template->create('index.html', $output);
     }
 }

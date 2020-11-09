@@ -13,10 +13,10 @@
 
 namespace GyMadarasz\ChatBot\Controller;
 
-use GyMadarasz\WebApp\Service\Template;
-use GyMadarasz\WebApp\Service\Globals;
 use GyMadarasz\ChatBot\Service\Chats;
-use GyMadarasz\WebApp\Service\Mysql;
+use GyMadarasz\WebApp\Service\FormToken;
+use GyMadarasz\WebApp\Service\Globals;
+use GyMadarasz\WebApp\Service\Template;
 
 /**
  * MyChatsPage
@@ -33,19 +33,26 @@ class MyChatsPage
     protected Template $template;
     protected Globals $globals;
     protected Chats $chats;
+    protected FormToken $formToken;
 
     /**
      * Method __construct
      *
-     * @param Template $template template
-     * @param Globals  $globals  globals
-     * @param Chats    $chats    chats
+     * @param Template  $template  template
+     * @param Globals   $globals   globals
+     * @param Chats     $chats     chats
+     * @param FormToken $formToken formToken
      */
-    public function __construct(Template $template, Globals $globals, Chats $chats)
-    {
+    public function __construct(
+        Template $template,
+        Globals $globals,
+        Chats $chats,
+        FormToken $formToken
+    ) {
         $this->template = $template;
         $this->globals = $globals;
         $this->chats = $chats;
+        $this->formToken = $formToken;
     }
 
     /**
@@ -56,9 +63,11 @@ class MyChatsPage
     public function view(): Template
     {
         return $this->template->create(
-            'my-chats.html',
+            'index.html',
             [
-            'chats' => $this->chats->getList(),
+                'body' => 'my-chats.html',
+                'chats' => $this->chats->getList(),
+                'token' => $this->formToken->get(),
             ]
         );
     }
@@ -70,7 +79,10 @@ class MyChatsPage
      */
     public function delete(): Template
     {
-        $output = [];
+        $output = [
+            'body' => 'my-chats.html',
+            'token' => $this->formToken->get(),
+        ];
         if (!$this->chats->delete((int)$this->globals->getGet('id'))) {
             $output['error'] = 'Chat is not deleted';
             $output['chats'] = $this->chats->getList();
@@ -78,6 +90,6 @@ class MyChatsPage
         }
         $output['message'] = 'Chat is deleted';
         $output['chats'] = $this->chats->getList();
-        return $this->template->create('my-chats.html', $output);
+        return $this->template->create('index.html', $output);
     }
 }
