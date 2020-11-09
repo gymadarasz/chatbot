@@ -14,7 +14,8 @@
 <form method="POST" action="?q=conversation-response">
     {{ $token }}
     <input type="hidden" name="conversation_id" value="{{ $conversation_id }}">
-    <select name="human_response_message_id">
+    <select name="human_response_message_id" required>
+        <option value=""> -- Say something.. --</oprion>
         {{? foreach ($responses as $response): }}
         <option value="{{ $response['id'] }}">{{ $response['content'] }}</option>
         {{? endforeach }}
